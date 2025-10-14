@@ -236,20 +236,7 @@ class GraduationCard {
         }
     }    
     
-        uploadMusic() {
-        this.musicUpload.click();
-    }    
-    fallbackToNoMusic() {
-        // Jika musik default gagal dimuat, beri opsi upload
-        this.musicInfo.textContent = 'Upload Musik';
-        this.musicToggle.textContent = '🎵';
-        this.musicToggle.style.animation = 'pulse 2s infinite';
-        
-        // Reset animation setelah first click
-        this.musicToggle.addEventListener('click', () => {
-            this.musicToggle.style.animation = 'none';
-        }, { once: true });
-    }
+
 
 
     
@@ -608,35 +595,124 @@ class GraduationCard {
         });
     }
     
+
+
     async loadComments() {
         try {
             this.commentsList.innerHTML = '<div class="loading-comments">Memuat ucapan...</div>';
             
-            // Load dari Google Apps Script
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getComments`, {
+            // Gunakan approach yang lebih robust
+            const timestamp = new Date().getTime(); // Avoid cache
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getComments&t=${timestamp}`, {
                 method: 'GET',
+                mode: 'no-cors', // Important for Google Apps Script
                 headers: {
                     'Content-Type': 'application/json'
                 }
+            }).catch(error => {
+                throw new Error(`Network error: ${error.message}`);
             });
-            
-            if (response.ok) {
-                const data = await response.json();
-                this.comments = data.comments || [];
-                this.displayComments();
-            } else {
+
+            if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+
+            const data = await response.json();
+            this.comments = data.comments || [];
+            this.displayComments();
+            
         } catch (error) {
             console.error('Error loading comments:', error);
-            this.commentsList.innerHTML = `
-                <div class="no-comments">
-                    <p>Gagal memuat ucapan. Silakan refresh halaman.</p>
-                    <p style="font-size: 0.8rem; margin-top: 10px;">Error: ${error.message}</p>
-                </div>
-            `;
+            this.showFallbackComments();
         }
     }
+
+    showFallbackComments() {
+        this.commentsList.innerHTML = `
+            <div class="no-comments">
+                <p>⚠️ Tidak bisa terhubung ke server</p>
+                <p style="font-size: 0.8rem; margin-top: 10px;">
+                    Fitur komentar sedang offline. Silakan refresh halaman atau coba lagi nanti.
+                </p>
+                <button onclick="location.reload()" style="
+                    margin-top: 10px;
+                    padding: 8px 16px;
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                ">Refresh Halaman</button>
+            </div>
+        `;
+    }
+
+    async submitComment() {
+        const formData = new FormData(this.commentForm);
+        const commentData = {
+            social_media: formData.get('social_media'),
+            username: formData.get('username').trim(),
+            comment: formData.get('comment').trim(),
+            timestamp: new Date().toISOString()
+        };
+        
+        // Validasi
+        if (!commentData.social_media || !commentData.username || !commentData.comment) {
+            this.showMessage('Harap isi semua field yang diperlukan.', 'error');
+            return;
+        }
+        
+        const submitBtn = this.commentForm.querySelector('.submit-btn');
+        const originalText = submitBtn.innerHTML;
+        
+        try {
+            submitBtn.innerHTML = '<span class="submit-icon">⏳</span>Mengirim...';
+            submitBtn.disabled = true;
+
+            // Gunakan FormData approach untuk POST
+            const formDataToSend = new FormData();
+            formDataToSend.append('social_media', commentData.social_media);
+            formDataToSend.append('username', commentData.username);
+            formDataToSend.append('comment', commentData.comment);
+            formDataToSend.append('action', 'addComment');
+
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(commentData),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.showMessage('🎉 Ucapan berhasil dikirim! Terima kasih', 'success');
+                    this.commentForm.reset();
+                    
+                    // Reload comments setelah 2 detik
+                    setTimeout(() => {
+                        this.loadComments();
+                    }, 2000);
+                } else {
+                    throw new Error(result.error || 'Gagal mengirim komentar');
+                }
+            } else {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+            
+        } catch (error) {
+            console.error('Error submitting comment:', error);
+            this.showMessage(`❌ Gagal mengirim: ${error.message}`, 'error');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+
+    // ... methods lainnya ...
+
     
     displayComments() {
         if (this.comments.length === 0) {
