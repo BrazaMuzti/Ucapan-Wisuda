@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartu Ucapan Selamat Wisuda</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Music Player -->
+        <div class="music-player">
+            <button id="music-toggle" class="music-btn">🎵</button>
+            <audio id="background-music" loop>
+                <!-- Default Music Source -->
+                <source src="music/Kejar Mimpi.mp3" type="audio/mpeg">
+                Browser Anda tidak mendukung elemen audio.
+            </audio>
+            <div class="music-info" id="music-info">Play</div>
+            <input type="file" id="music-upload" accept="audio/*" class="music-upload-input">
+        </div>
+
+        <!-- Cover Section -->
+        <section id="cover" class="section active">
+            <div class="cover-content">
+                <div class="profile-photo">
+                <img src="https://upload.wikimedia.org/wikipedia/id/thumb/0/09/Logo_Almamater_UPI.svg/1200px-Logo_Almamater_UPI.svg.png" alt="Logo UPI" class="university-logo" style="width:100px; height:auto; margin-bottom:10px;" animation="fadeInDown">  
+                    <div class="graduation-cap">🎓</div>
+                    <div class="photo-container">
+                        <img src="Gallery/Qia.png" alt="Foto Wisudawan" id="cover-photo" class="cover-photo">
+                        <div class="photo-overlay">
+                            <span class="upload-text">Klik untuk upload foto</span>
+                        </div>
+                        <input type="file" id="cover-photo-upload" accept="image/*" class="photo-upload-input">
+                    </div>
+                </div>
+
+                <h1 class="title">Selamat Wisuda!</h1>
+                <h2 class="name">Rizqia Rahmah Fauziyah. S.Pd.</h2>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mea+Culpa&display=swap" rel="stylesheet">
+
+                <p class="subtitle">Swipe untuk melanjutkan →</p>
+            </div>
+        </section>
+
+        <!-- Greeting Section -->
+        <section id="greeting" class="section">
+            <div class="content">
+                <h2>Ucapan Selamat</h2>
+                <div class="message-box">
+                    <p>Dengan penuh kebahagiaan, kami ucapkan:</p>
+                    <p class="highlight">🎓"SELAMAT WISUDA!"🎓</p>
+                    <p>Atas segala perjuangan dan dedikasi yang telah kamu berikan. Ini adalah awal dari perjalanan baru yang penuh harapan.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Photo Section -->
+        <section id="photo" class="section">
+            <div class="content">
+                <h2>Cerita Singkat mau Wisuda</h2>
+                
+                <!-- Main Photo Slider -->
+                <div class="main-slider">
+                    <div class="slider-container">
+                        <div class="slide active">
+                            <div class="slide-content">
+                                <img src="Gallery/Qia.png" alt="Foto 1" class="slide-image">
+                                <div class="slide-caption">Momen Wisuda</div>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <div class="slide-content">
+                                <img src="Gallery/qia 1.jpg" alt="Foto 2" class="slide-image">
+                                <div class="slide-caption">Waktu Anak-anak De Rahmah, lagi liat masa depan De Qia</div>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <div class="slide-content">
+                                <img src="Gallery/qia 2.jpg" alt="Foto 3" class="slide-image">
+                                <div class="slide-caption">Waktu De Rahmah Remaja mau bisik2 "Wulujeng Wisuda" ke Qia Dewasa</div>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <div class="slide-content">
+                                <img src="Gallery/qia 3.jpg" alt="Foto 4" class="slide-image">
+                                <div class="slide-caption">Bisik-bisiknya kurang keras! </div>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <div class="slide-content">
+                                <img src="Gallery/qia 4.jpg" alt="Foto 5" class="slide-image">
+                                <div class="slide-caption">Mau sulap duduk di kursi, tanpa kursi</div>
+                            </div>
+                        </div>                        
+                        <div class="slide">
+                            <div class="slide-content">
+                                <img src="Gallery/qia 5.jpg" alt="Foto 6" class="slide-image">
+                                <div class="slide-caption">Waktu di kelas gatau, ada yang tau lagi mikirin apa?</div>
+                            </div>
+                        </div>    
+                        <div class="slide">
+                            <div class="slide-content">
+                                <img src="Gallery/qia 6.jpg" alt="Foto 7" class="slide-image">
+                                <div class="slide-caption">Waktu dapet KTS, keinget ketika dipanggil De Rahmah</div>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <div class="slide-content">
+                                <img src="Gallery/qia 7.jpg" alt="Foto 8" class="slide-image">
+                                <div class="slide-caption">Waktu kayanya sih mau naik lift, padahal turun lift</div>
+                            </div>
+                        </div>
+                        <div class="slide">
+                            <div class="slide-content">
+                                <img src="Gallery/qia 8.jpg" alt="Foto 9" class="slide-image">
+                                <div class="slide-caption">Waktu ngenangin kampus yang udah berjuang selama kuliah</div>
+                            </div>
+                        </div>                        
+                    </div>
+                    
+                    <button class="slider-nav prev-nav">&#10094;</button>
+                    <button class="slider-nav next-nav">&#10095;</button>
+                    
+                    <div class="slider-dots">
+                        <span class="dot active" data-slide="0"></span>
+                        <span class="dot" data-slide="1"></span>
+                        <span class="dot" data-slide="2"></span>
+                        <span class="dot" data-slide="3"></span>
+                        <span class="dot" data-slide="4"></span>
+                        <span class="dot" data-slide="5"></span>
+                        <span class="dot" data-slide="6"></span>
+                        <span class="dot" data-slide="7"></span>
+                        <span class="dot" data-slide="8"></span>
+                    </div>
+                </div>
+
+                <!-- Thumbnail Gallery -->
+                <div class="thumbnail-gallery">
+                    <div class="thumbnails-container">
+                        <div class="thumbnail active" data-slide="0">
+                            <img src="Gallery/Qia.png" alt="Thumb 1" class="thumb-image">
+                        </div>
+                        <div class="thumbnail" data-slide="1">
+                            <img src="Gallery/qia 1.jpg" alt="Thumb 2" class="thumb-image">
+                        </div>
+                        <div class="thumbnail" data-slide="2">
+                            <img src="Gallery/qia 2.jpg" alt="Thumb 3" class="thumb-image">
+                        </div>
+                        <div class="thumbnail" data-slide="3">
+                            <img src="Gallery/qia 3.jpg" alt="Thumb 4" class="thumb-image">
+                        </div>
+                        <div class="thumbnail" data-slide="4">
+                            <img src="Gallery/qia 4.jpg" alt="Thumb 5" class="thumb-image">
+                        </div>
+                        <div class="thumbnail" data-slide="5">
+                            <img src="Gallery/qia 5.jpg" alt="Thumb 6" class="thumb-image">
+                        </div>
+                        <div class="thumbnail" data-slide="6">
+                            <img src="Gallery/qia 6.jpg" alt="Thumb 7" class="thumb-image">
+                        </div>
+                        <div class="thumbnail" data-slide="7">
+                            <img src="Gallery/qia 7.jpg" alt="Thumb 8" class="thumb-image">
+                        </div>
+                        <div class="thumbnail" data-slide="8">
+                            <img src="Gallery/qia 8.jpg" alt="Thumb 9" class="thumb-image">
+                        </div>    
+                </div>
+
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <button class="upload-slider-btn">
+                        📁 Upload Foto Slider
+                    </button>
+                    <input type="file" id="slider-upload" multiple accept="image/*" class="upload-input">
+                </div>
+                
+                <!-- Gallery Section -->
+                <div class="gallery-section">
+                    <h3>Galeri Kenangan</h3> <a href="https://www.facebook.com/rizqia.fauziyah.9/photos" target="https://www.facebook.com/rizqia.fauziyah.9/photos" class="view-all-link">Lihat Semua</a>
+                    <div class="gallery-upload">
+                        <label for="folder-upload" class="folder-upload-btn">
+                            📁 Pilih Folder Galeri
+                        </label>
+                        <input type="file" id="folder-upload" webkitdirectory multiple accept="image/*" class="folder-upload">
+                    </div>
+                    <div class="gallery-container" id="gallery-container">
+                        <p class="gallery-placeholder">Pilih folder untuk melihat galeri foto</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Motivation Section -->
+        <section id="motivation" class="section">
+            <div class="content">
+                <h2>Kata Motivasi</h2>
+                <div class="quote-box">
+                    <p class="quote">"Pendidikan adalah senjata paling ampuh yang bisa kamu gunakan untuk mengubah dunia."</p>
+                    <p class="author">- Nelson Mandela</p>
+                </div>
+                <div class="motivation-text">
+                    <p>Teruslah belajar dan berkembang. Gelar ini bukan akhir, tapi awal perjalanan menuju kesuksesan yang lebih besar. Aamiin</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hope Section -->
+        <section id="hope" class="section">
+            <div class="content">
+                <h2>Harapan buat <br> Rizqia Rahmah Fauziyah. S.Pd.</h2>
+                <div class="wish-box">
+                    <p>Semoga di setiap langkah yang kamu ambil:</p>
+                    <ul class="wish-list">
+                        <li>🤲 Semoga Allah SWT memberkahi ilmu yang kamu miliki agar bermanfaat bagi sesama</li>
+                        <li>🙏🏻 Semoga gelar ini membawa banyak keberkahan</li>
+                        <li>🦸🏻 Wanita tangguh dipenuhi keberanian untuk menghadapi tantangan, dan kekuatan 👸🏼</li>
+                        <li>💫 Kesuksesan selalu menyertai</li>
+                        <li>🌟 Impian terwujud dengan indah</li>
+                        <li>🚀 Karir terus menanjak</li>
+                        <li>❤️ Kebahagiaan tak terhingga</li>
+                        <li>👨‍👩‍👧‍👦 Keluarga selalu dalam lindungan-Nya</li>
+                    <p class="closing">Tetap semangat dan jadilah inspirasi!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Media Section -->
+        <section id="social" class="section">
+            <div class="content">
+                <h2>Terhubung Bersama</h2>
+                <div class="social-content">
+                    <div class="social-icons">
+                        <a href="#" class="social-link instagram" target="https://www.instagram.com/r.qiaaa_/">
+                            <span class="social-icon">📷</span>
+                            <span class="social-text">Instagram</span>
+                        </a>
+                        <a href="#" class="social-link facebook" target="https://www.facebook.com/rizqia.fauziyah.9">
+                            <span class="social-icon">👥</span>
+                            <span class="social-text">Facebook</span>
+                        </a>
+                        <a href="#" class="social-link linkedin" target="https://www.linkedin.com/search/results/all/?keywords=rizkia%20rahmah%20fauziyah&origin=GLOBAL_SEARCH_HEADER&sid=(FZ">
+                            <span class="social-icon">💼</span>
+                            <span class="social-text">LinkedIn</span>
+                        </a>
+                        <a href="#" class="social-link twitter" target="_blank">
+                            <span class="social-icon">🐦</span>
+                            <span class="social-text">Twitter</span>
+                        </a>
+                    </div>
+                    
+                    <div class="share-section">
+                        <h3>Bagikan Kebahagiaan</h3>
+                        <div class="share-buttons">
+                            <button class="share-btn whatsapp" data-platform="whatsapp">
+                                <span class="share-icon">💚</span>
+                                WhatsApp
+                            </button>
+                            <button class="share-btn facebook" data-platform="facebook">
+                                <span class="share-icon">🔵</span>
+                                Facebook
+                            </button>
+                            <button class="share-btn twitter" data-platform="twitter">
+                                <span class="share-icon">🐦</span>
+                                Twitter
+                            </button>
+                            <button class="share-btn copy-link" data-platform="copy">
+                                <span class="share-icon">📋</span>
+                                Copy Link
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <h3>Informasi Kontak</h3>
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <span class="contact-text">email@example.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📱</span>
+                            <span class="contact-text">+62 812-3456-7890</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comments Section -->
+        <section id="comments" class="section">
+            <div class="content">
+                <h2>Ucapan & Doa</h2>
+                <div class="comments-content">
+                    <!-- Comment Form -->
+                    <div class="comment-form-container">
+                        <h3>Tulis Ucapan & Doa</h3>
+                        <form id="comment-form" class="comment-form">
+                            <div class="form-group">
+                                <label for="social-media">Platform Media Sosial</label>
+                                <select id="social-media" name="social_media" required>
+                                    <option value="">Pilih Platform</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="twitter">Twitter</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="whatsapp">WhatsApp</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="username">Nama Akun / Nama Lengkap</label>
+                                <input type="text" id="username" name="username" required 
+                                       placeholder="Masukkan nama akun media sosial atau nama lengkap">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="comment">Ucapan & Doa</label>
+                                <textarea id="comment" name="comment" required 
+                                          placeholder="Tulis ucapan selamat dan doa terbaikmu..." 
+                                          rows="4"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn">
+                                <span class="submit-icon">💫</span>
+                                Kirim Ucapan
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Comments Display -->
+                    <div class="comments-display">
+                        <h3>Ucapan dari Teman & Keluarga</h3>
+                        <div class="comments-list" id="comments-list">
+                            <div class="loading-comments">Memuat ucapan...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Dots -->
+        <div class="navigation-dots">
+            <span class="dot active" data-section="cover"></span>
+            <span class="dot" data-section="greeting"></span>
+            <span class="dot" data-section="photo"></span>
+            <span class="dot" data-section="motivation"></span>
+            <span class="dot" data-section="hope"></span>
+            <span class="dot" data-section="social"></span>
+            <span class="dot" data-section="comments"></span>
+        </div>
+
+        <!-- Lightbox Modal -->
+        <div id="lightbox" class="lightbox">
+            <span class="lightbox-close">&times;</span>
+            <span class="lightbox-prev">&#10094;</span>
+            <span class="lightbox-next">&#10095;</span>
+            <img class="lightbox-image" id="lightbox-image">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Google Apps Script URL - Ganti dengan URL Anda -->
+    <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/1XcMCuxk9Ci_woMafBrOu3BdvSGg7ZwkWWcSG4BQOR_g/exec';
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
