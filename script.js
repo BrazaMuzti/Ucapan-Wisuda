@@ -597,52 +597,58 @@ class GraduationCard {
     
 
 
-    async loadComments() {
+     async loadComments() {
         try {
             this.commentsList.innerHTML = '<div class="loading-comments">Memuat ucapan...</div>';
             
-            // Gunakan approach yang lebih robust
-            const timestamp = new Date().getTime(); // Avoid cache
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getComments&t=${timestamp}`, {
-                method: 'GET',
-                mode: 'no-cors', // Important for Google Apps Script
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).catch(error => {
-                throw new Error(`Network error: ${error.message}`);
-            });
-
+            // Gunakan parameter yang benar
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getComments`);
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
             this.comments = data.comments || [];
             this.displayComments();
             
         } catch (error) {
             console.error('Error loading comments:', error);
-            this.showFallbackComments();
+            this.showFallbackComments(error);
         }
     }
 
-    showFallbackComments() {
+    showFallbackComments(error) {
         this.commentsList.innerHTML = `
             <div class="no-comments">
-                <p>⚠️ Tidak bisa terhubung ke server</p>
-                <p style="font-size: 0.8rem; margin-top: 10px;">
-                    Fitur komentar sedang offline. Silakan refresh halaman atau coba lagi nanti.
+                <p>⚠️ Tidak bisa memuat ucapan</p>
+                <p style="font-size: 0.8rem; margin-top: 10px; color: #666;">
+                    Error: ${error.message}
                 </p>
-                <button onclick="location.reload()" style="
-                    margin-top: 10px;
-                    padding: 8px 16px;
-                    background: #667eea;
-                    color: white;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                ">Refresh Halaman</button>
+                <div style="margin-top: 15px;">
+                    <button onclick="location.reload()" style="
+                        padding: 8px 16px;
+                        background: #667eea;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        margin-right: 10px;
+                    ">Refresh Halaman</button>
+                    <button onclick="this.parentElement.innerHTML = '<p>Silakan coba lagi nanti atau hubungi administrator.</p>'" style="
+                        padding: 8px 16px;
+                        background: #6c757d;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">Tutup</button>
+                </div>
             </div>
         `;
     }
@@ -652,8 +658,7 @@ class GraduationCard {
         const commentData = {
             social_media: formData.get('social_media'),
             username: formData.get('username').trim(),
-            comment: formData.get('comment').trim(),
-            timestamp: new Date().toISOString()
+            comment: formData.get('comment').trim()
         };
         
         // Validasi
@@ -669,37 +674,27 @@ class GraduationCard {
             submitBtn.innerHTML = '<span class="submit-icon">⏳</span>Mengirim...';
             submitBtn.disabled = true;
 
-            // Gunakan FormData approach untuk POST
-            const formDataToSend = new FormData();
-            formDataToSend.append('social_media', commentData.social_media);
-            formDataToSend.append('username', commentData.username);
-            formDataToSend.append('comment', commentData.comment);
-            formDataToSend.append('action', 'addComment');
-
             const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
-                body: JSON.stringify(commentData),
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                body: JSON.stringify(commentData)
             });
 
-            if (response.ok) {
-                const result = await response.json();
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showMessage('🎉 Ucapan berhasil dikirim! Terima kasih', 'success');
+                this.commentForm.reset();
                 
-                if (result.success) {
-                    this.showMessage('🎉 Ucapan berhasil dikirim! Terima kasih', 'success');
-                    this.commentForm.reset();
-                    
-                    // Reload comments setelah 2 detik
-                    setTimeout(() => {
-                        this.loadComments();
-                    }, 2000);
-                } else {
-                    throw new Error(result.error || 'Gagal mengirim komentar');
-                }
+                // Reload comments setelah 1.5 detik
+                setTimeout(() => {
+                    this.loadComments();
+                }, 1500);
+                
             } else {
-                throw new Error(`HTTP error: ${response.status}`);
+                throw new Error(result.error || 'Gagal mengirim komentar');
             }
             
         } catch (error) {
@@ -711,7 +706,6 @@ class GraduationCard {
         }
     }
 
-    // ... methods lainnya ...
 
     
     displayComments() {
