@@ -316,14 +316,18 @@
                             <div class="form-group">
                                 <label for="username">Nama Akun / Nama Lengkap</label>
                                 <input type="text" id="username" name="username" required 
-                                       placeholder="Masukkan nama akun media sosial atau nama lengkap">
+                                       placeholder="Masukkan nama akun media sosial atau nama lengkap"
+                                       minlength="2" maxlength="50">
                             </div>
                             
                             <div class="form-group">
                                 <label for="comment">Ucapan & Doa</label>
                                 <textarea id="comment" name="comment" required 
                                           placeholder="Tulis ucapan selamat dan doa terbaikmu..." 
-                                          rows="4"></textarea>
+                                          rows="4" minlength="5" maxlength="500"></textarea>
+                                <div class="char-count">
+                                    <span id="char-counter">0</span>/500 karakter
+                                </div>
                             </div>
                             
                             <button type="submit" class="submit-btn">
@@ -336,6 +340,12 @@
                     <!-- Comments Display -->
                     <div class="comments-display">
                         <h3>Ucapan dari Teman & Keluarga</h3>
+                        <div class="comments-controls">
+                            <button id="refresh-comments" class="refresh-btn">
+                                🔄 Refresh
+                            </button>
+                            <span class="comments-count" id="comments-count">Memuat...</span>
+                        </div>
                         <div class="comments-list" id="comments-list">
                             <div class="loading-comments">Memuat ucapan...</div>
                         </div>
@@ -365,9 +375,17 @@
         </div>
     </div>
 
-    <!-- Google Apps Script URL - Ganti dengan URL Anda -->
+    <!-- Google Apps Script Configuration -->
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxJnMlT1RRyx8VABKUl3Jxd1lEYiUlNLv-tie9PgQ/exec';
+        // 🔥 GANTI DENGAN URL WEB APP ANDA 🔥
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzP4OZElkMn4uMxOv87DcGSjzSx3RsSFStWfQTTeJCv0WTMl-pN_7qFNvGGg1iW3YmW/exec';
+        
+        // Configuration
+        const CONFIG = {
+            autoRefreshComments: true,
+            refreshInterval: 30000, // 30 detik
+            maxCommentLength: 500
+        };
     </script>
     
     <script src="script.js"></script>

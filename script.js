@@ -597,12 +597,65 @@ class GraduationCard {
     
 
 
-     async loadComments() {
+     // ========== COMMENTS SYSTEM ==========
+    initComments() {
+        this.commentForm = document.getElementById('comment-form');
+        this.commentsList = document.getElementById('comments-list');
+        this.commentsCount = document.getElementById('comments-count');
+        this.refreshBtn = document.getElementById('refresh-comments');
+        
+        // Load existing comments
+        this.loadComments();
+        
+        // Form submission
+        this.commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.submitComment();
+        });
+        
+        // Refresh button
+        this.refreshBtn.addEventListener('click', () => {
+            this.loadComments();
+        });
+        
+        // Auto refresh comments
+        if (CONFIG.autoRefreshComments) {
+            this.startAutoRefresh();
+        }
+    }
+    
+    initCharacterCounter() {
+        const commentTextarea = document.getElementById('comment');
+        const charCounter = document.getElementById('char-counter');
+        
+        commentTextarea.addEventListener('input', (e) => {
+            const length = e.target.value.length;
+            charCounter.textContent = length;
+            
+            if (length > CONFIG.maxCommentLength) {
+                charCounter.style.color = '#e74c3c';
+            } else if (length > CONFIG.maxCommentLength * 0.8) {
+                charCounter.style.color = '#f39c12';
+            } else {
+                charCounter.style.color = '#27ae60';
+            }
+        });
+    }
+    
+    startAutoRefresh() {
+        this.commentsRefreshInterval = setInterval(() => {
+            this.loadComments();
+        }, CONFIG.refreshInterval);
+    }
+    
+    async loadComments() {
         try {
             this.commentsList.innerHTML = '<div class="loading-comments">Memuat ucapan...</div>';
+            this.refreshBtn.disabled = true;
+            this.refreshBtn.innerHTML = '⏳ Memuat...';
             
-            // Gunakan parameter yang benar
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getComments`);
+            const timestamp = new Date().getTime();
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getComments&t=${timestamp}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -617,42 +670,67 @@ class GraduationCard {
             this.comments = data.comments || [];
             this.displayComments();
             
+            // Update counter
+            this.commentsCount.textContent = `${this.comments.length} ucapan`;
+            
         } catch (error) {
             console.error('Error loading comments:', error);
             this.showFallbackComments(error);
+        } finally {
+            this.refreshBtn.disabled = false;
+            this.refreshBtn.innerHTML = '🔄 Refresh';
         }
     }
-
+    
+    displayComments() {
+        if (this.comments.length === 0) {
+            this.commentsList.innerHTML = `
+                <div class="no-comments">
+                    <p>🎓 Belum ada ucapan</p>
+                    <p style="font-size: 0.8rem; margin-top: 8px; color: #666;">
+                        Jadilah yang pertama mengucapkan selamat!
+                    </p>
+                </div>
+            `;
+            return;
+        }
+        
+        this.commentsList.innerHTML = this.comments.map(comment => `
+            <div class="comment-item">
+                <div class="comment-header">
+                    <span class="social-badge ${comment.social_media}">
+                        ${this.getSocialMediaIcon(comment.social_media)}
+                        ${this.getSocialMediaName(comment.social_media)}
+                    </span>
+                    <span class="username">${this.escapeHtml(comment.username)}</span>
+                </div>
+                <div class="comment-text">${this.escapeHtml(comment.comment)}</div>
+                <div class="comment-date">${this.formatDate(comment.timestamp)}</div>
+            </div>
+        `).join('');
+    }
+    
     showFallbackComments(error) {
         this.commentsList.innerHTML = `
             <div class="no-comments">
-                <p>⚠️ Tidak bisa memuat ucapan</p>
-                <p style="font-size: 0.8rem; margin-top: 10px; color: #666;">
-                    Error: ${error.message}
+                <p>⚠️ Gagal memuat ucapan</p>
+                <p style="font-size: 0.8rem; margin-top: 8px; color: #666;">
+                    ${error.message}
                 </p>
-                <div style="margin-top: 15px;">
-                    <button onclick="location.reload()" style="
-                        padding: 8px 16px;
-                        background: #667eea;
-                        color: white;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        margin-right: 10px;
-                    ">Refresh Halaman</button>
-                    <button onclick="this.parentElement.innerHTML = '<p>Silakan coba lagi nanti atau hubungi administrator.</p>'" style="
-                        padding: 8px 16px;
-                        background: #6c757d;
-                        color: white;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    ">Tutup</button>
-                </div>
+                <button onclick="graduationCard.loadComments()" style="
+                    margin-top: 12px;
+                    padding: 8px 16px;
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 0.8rem;
+                ">Coba Lagi</button>
             </div>
         `;
     }
-
+    
     async submitComment() {
         const formData = new FormData(this.commentForm);
         const commentData = {
@@ -664,6 +742,21 @@ class GraduationCard {
         // Validasi
         if (!commentData.social_media || !commentData.username || !commentData.comment) {
             this.showMessage('Harap isi semua field yang diperlukan.', 'error');
+            return;
+        }
+        
+        if (commentData.username.length < 2) {
+            this.showMessage('Nama harus minimal 2 karakter.', 'error');
+            return;
+        }
+        
+        if (commentData.comment.length < 5) {
+            this.showMessage('Ucapan harus minimal 5 karakter.', 'error');
+            return;
+        }
+        
+        if (commentData.comment.length > CONFIG.maxCommentLength) {
+            this.showMessage(`Ucapan maksimal ${CONFIG.maxCommentLength} karakter.`, 'error');
             return;
         }
         
@@ -687,11 +780,12 @@ class GraduationCard {
             if (result.success) {
                 this.showMessage('🎉 Ucapan berhasil dikirim! Terima kasih', 'success');
                 this.commentForm.reset();
+                document.getElementById('char-counter').textContent = '0';
                 
-                // Reload comments setelah 1.5 detik
+                // Reload comments setelah 2 detik
                 setTimeout(() => {
                     this.loadComments();
-                }, 1500);
+                }, 2000);
                 
             } else {
                 throw new Error(result.error || 'Gagal mengirim komentar');
@@ -701,42 +795,89 @@ class GraduationCard {
             console.error('Error submitting comment:', error);
             this.showMessage(`❌ Gagal mengirim: ${error.message}`, 'error');
         } finally {
-            submitBtn.innerHTML = originalText;
+            submitBtn.innerHTML = '<span class="submit-icon">💫</span>Kirim Ucapan';
             submitBtn.disabled = false;
         }
     }
-
-
     
-    displayComments() {
-        if (this.comments.length === 0) {
-            this.commentsList.innerHTML = `
-                <div class="no-comments">
-                    <p>Belum ada ucapan. Jadilah yang pertama mengucapkan selamat! 🎓</p>
-                </div>
-            `;
-            return;
+    getSocialMediaIcon(platform) {
+        const icons = {
+            instagram: '📷',
+            facebook: '👥',
+            twitter: '🐦',
+            tiktok: '🎵',
+            whatsapp: '💚',
+            linkedin: '💼',
+            lainnya: '🌐'
+        };
+        return icons[platform] || '🌐';
+    }
+    
+    getSocialMediaName(platform) {
+        const names = {
+            instagram: 'Instagram',
+            facebook: 'Facebook',
+            twitter: 'Twitter',
+            tiktok: 'TikTok',
+            whatsapp: 'WhatsApp',
+            linkedin: 'LinkedIn',
+            lainnya: 'Lainnya'
+        };
+        return names[platform] || 'Lainnya';
+    }
+    
+    formatDate(timestamp) {
+        try {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Baru saja';
+            if (diffMins < 60) return `${diffMins} menit lalu`;
+            if (diffHours < 24) return `${diffHours} jam lalu`;
+            if (diffDays === 1) return 'Kemarin';
+            if (diffDays < 7) return `${diffDays} hari lalu`;
+            
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+        } catch (error) {
+            return 'Hari ini';
+        }
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    showMessage(message, type) {
+        // Remove existing messages
+        const existingMessage = this.commentForm.querySelector('.success-message, .error-message');
+        if (existingMessage) {
+            existingMessage.remove();
         }
         
-        // Sort comments by date (newest first)
-        const sortedComments = [...this.comments].sort((a, b) => 
-            new Date(b.timestamp) - new Date(a.timestamp)
-        );
+        const messageDiv = document.createElement('div');
+        messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+        messageDiv.innerHTML = message;
         
-        this.commentsList.innerHTML = sortedComments.map(comment => `
-            <div class="comment-item">
-                <div class="comment-header">
-                    <span class="social-badge ${comment.social_media}">
-                        ${this.getSocialMediaIcon(comment.social_media)}
-                        ${this.getSocialMediaName(comment.social_media)}
-                    </span>
-                    <span class="username">${this.escapeHtml(comment.username)}</span>
-                </div>
-                <div class="comment-text">${this.escapeHtml(comment.comment)}</div>
-                <div class="comment-date">${this.formatDate(comment.timestamp)}</div>
-            </div>
-        `).join('');
+        this.commentForm.insertBefore(messageDiv, this.commentForm.firstChild);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, 5000);
     }
+    
     
     getSocialMediaIcon(platform) {
         const icons = {

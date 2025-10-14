@@ -1111,6 +1111,80 @@ body {
 .comments-list::-webkit-scrollbar-thumb:hover {
     background: #764ba2;
 }
+/* Additional Styles for Comments */
+.comments-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.refresh-btn {
+    padding: 6px 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+    background: #5a6fd8;
+    transform: scale(1.05);
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.comments-count {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: bold;
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Slider Placeholder Styles */
+.slide-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: #667eea;
+    background: #f8f9fa;
+}
+
+.slide-hint {
+    font-size: 0.8rem;
+    margin-top: 10px;
+    color: #666;
+}
+
+.thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8f9fa;
+    color: #667eea;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
 
 /* Responsive Design for Comments */
 @media (max-width: 480px) {
